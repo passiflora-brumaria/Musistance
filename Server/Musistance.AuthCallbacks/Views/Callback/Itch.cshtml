@@ -1,0 +1,36 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<p id="info-p"></p>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    var queryString = window.location.hash.slice(1);
+    var params = new URLSearchParams(queryString);
+    var accessToken = params.get("access_token");
+    var userId = params.get("state");
+
+    var dto = {
+        userId: userId,
+        token: accessToken
+    };
+    $.ajax({
+        type: "POST",
+        url: '@Url.Action("ItchToken","Callback")',
+        contentType: "application/json",
+        data: JSON.stringify(dto),
+        success: function (result) {
+            $("#info-p").html("Your profile has been imported. You may now close this window.");
+            window.close();
+        },
+        error: function (jqxhr,status,exception) {
+            window.location.href = '@Url.Action("Error","Callback")';
+        },
+        complete: function (data) {
+            $("#info-p").html("Your profile has been imported. You may now close this window.");
+            window.close();
+        }
+    });
+</script>
