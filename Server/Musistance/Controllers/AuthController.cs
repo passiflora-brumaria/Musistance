@@ -22,6 +22,10 @@ namespace Musistance.Controllers
             _auth = auth;
         }
 
+        /// <summary>
+        /// Creates a new account using itch OAuth.
+        /// </summary>
+        /// <returns>An auth session with a challenge URL for profile import.</returns>
         [HttpGet("signup/itch")]
         [ProducesResponseType(200,Type = typeof(AuthSessionDto))]
         public async Task<IActionResult> ItchSignupAsync ()
@@ -35,6 +39,12 @@ namespace Musistance.Controllers
             });
         }
 
+        /// <summary>
+        /// Performs a login operation. If the profile is not yet ready for use, returns back the login data for future retry.
+        /// </summary>
+        /// <param name="id">User ID, used as a username.</param>
+        /// <param name="vCode">Validation code obtained at signup (or previous login), used as a password.</param>
+        /// <returns>The auth session, which includes an access token and the next validation code.</returns>
         [HttpPost("login/{id}")]
         [ProducesResponseType(200,Type = typeof(AuthSessionDto))]
         public async Task<IActionResult> LoginAsync (int id, [FromBody] string vCode)

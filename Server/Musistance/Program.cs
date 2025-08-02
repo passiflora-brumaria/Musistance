@@ -35,7 +35,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddTransient<IAuthService,AuthService>();
+builder.Services.AddTransient<IAuthService,AuthService>()
+    .AddTransient<IProfileService,ProfileService>();
 
 var app = builder.Build();
 

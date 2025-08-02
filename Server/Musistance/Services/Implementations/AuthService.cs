@@ -95,6 +95,14 @@ namespace Musistance.Services.Implementations
         public async Task<AuthSessionDto> UseValidationCodeAsync (int userId, string validationCode)
         {
             UserProfile up = await _db.Profiles.Where(p => p.Id == userId).Include(p => p.Parent).SingleAsync();
+            if (up.Source == null)
+            {
+                return new AuthSessionDto()
+                {
+                    UserId = up.Id,
+                    NextValidationCode = validationCode
+                };
+            }
             if (up.LatestValidatonCode != HashData(validationCode,up.LatestValidationSalt))
             {
                 throw new Exception("401");

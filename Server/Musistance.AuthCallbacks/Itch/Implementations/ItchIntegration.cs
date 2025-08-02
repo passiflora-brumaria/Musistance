@@ -4,6 +4,7 @@ using Musistance.AuthCallbacks.Itch.Interfaces;
 using Musistance.AuthCallbacks.Itch.Settings;
 using Musistance.Data.Contexts;
 using Musistance.Data.Models.Users;
+using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Web;
@@ -28,34 +29,40 @@ namespace Musistance.AuthCallbacks.Itch.Implementations
 
         public async Task UpdateProfileFromItchAsync(int userId, string accessToken)
         {
+            UserProfile up = await _db.Profiles.Where(p => p.Id == userId).SingleOrDefaultAsync();
+            if (up == null)
+            {
+                throw new Exception("404");
+            }
             HttpClient client = new HttpClient();
             HttpResponseMessage resp = await client.GetAsync($"https://itch.io/api/1/{accessToken}/me");
+            Console.Write(JsonSerializer.Serialize(resp));
             if (resp.IsSuccessStatusCode)
             {
                 IDictionary<string,ItchIdentityDto> respData = JsonSerializer.Deserialize<IDictionary<string,ItchIdentityDto>>(await resp.Content.ReadAsStringAsync());
                 if (respData.TryGetValue("user",out ItchIdentityDto itchId))
                 {
-                    UserProfile up = await _db.Profiles.Where(p => p.Id == userId).SingleOrDefaultAsync();
-                    if (up != null)
+                    byte[] pfp = await client.GetByteArrayAsync(itchId.PictureUrl);
+                    up.Source = 0;
+                    up.SourceId = itchId.Id;
+                    up.Name = itchId.DisplayName;
+                    up.ProfilePicture = pfp;
+                    UserProfile parent = await _db.Profiles.Where(p => (p.Source == 0) && (p.SourceId == up.SourceId) && !p.ParentId.HasValue).FirstOrDefaultAsync();
+                    if (parent != null)
                     {
-                        byte[] pfp = await client.GetByteArrayAsync(itchId.PictureUrl);
-                        up.Source = 0;
-                        up.SourceId = itchId.Id;
-                        up.Name = itchId.DisplayName;
-                        up.ProfilePicture = pfp;
-                        UserProfile parent = await _db.Profiles.Where(p => (p.Source == 0) && (p.SourceId == up.SourceId) && !p.ParentId.HasValue).FirstOrDefaultAsync();
-                        if (parent != null)
-                        {
-                            up.ParentId = parent.Id;
-                            parent.Name = itchId.DisplayName;
-                            parent.ProfilePicture = pfp;
-                            _db.Profiles.Update(parent);
-                        }
-                        _db.Profiles.Update(up);
-                        await _db.SaveChangesAsync();
+                        up.ParentId = parent.Id;
+                        parent.Name = itchId.DisplayName;
+                        parent.ProfilePicture = pfp;
+                        _db.Profiles.Update(parent);
                     }
                 }
             }
+            else
+            {
+                up.MarkAsDeleted();
+            }
+            _db.Profiles.Update(up);
+            await _db.SaveChangesAsync();
         }
     }
 }

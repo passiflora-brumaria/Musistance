@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://dbu554qq47njt"]
+
+[ext_resource type="Script" uid="uid://dgfj0xnq4r4um" path="res://Scenes/Test/Test.cs" id="1_oy6ep"]
+
+[node name="Test" type="Node"]
+script = ExtResource("1_oy6ep")
+
+[node name="Center" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Column" type="VBoxContainer" parent="Center"]
+layout_mode = 2
+
+[node name="Pfp" type="TextureRect" parent="Center/Column"]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Center/Column"]
+layout_mode = 2

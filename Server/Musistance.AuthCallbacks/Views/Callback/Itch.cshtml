@@ -26,6 +26,7 @@
             window.close();
         },
         error: function (jqxhr,status,exception) {
+            console.error(jqxhr,status,exception);
             window.location.href = '@Url.Action("Error","Callback")';
         },
         complete: function (data) {
