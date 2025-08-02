@@ -36,7 +36,6 @@ namespace Musistance.AuthCallbacks.Itch.Implementations
             }
             HttpClient client = new HttpClient();
             HttpResponseMessage resp = await client.GetAsync($"https://itch.io/api/1/{accessToken}/me");
-            Console.Write(JsonSerializer.Serialize(resp));
             if (resp.IsSuccessStatusCode)
             {
                 IDictionary<string,ItchIdentityDto> respData = JsonSerializer.Deserialize<IDictionary<string,ItchIdentityDto>>(await resp.Content.ReadAsStringAsync());

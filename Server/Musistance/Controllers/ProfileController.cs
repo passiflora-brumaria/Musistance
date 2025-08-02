@@ -7,6 +7,9 @@ using Musistance.Services.Interfaces;
 
 namespace Musistance.Controllers
 {
+    /// <summary>
+    /// Operations for profile reading.
+    /// </summary>
     [Route("api/profiles")]
     [ApiController]
     [Authorize]
@@ -14,11 +17,18 @@ namespace Musistance.Controllers
     {
         private readonly IProfileService _prof;
 
+        /// <summary>
+        /// Dependency Injection constructor.
+        /// </summary>
         public ProfileController (IProfileService prof)
         {
             _prof = prof;
         }
 
+        /// <summary>
+        /// Gets the authed user's profile.
+        /// </summary>
+        /// <returns>The authed user's profile.</returns>
         [HttpGet("self")]
         [ProducesResponseType(200,Type = typeof(ProfileDto))]
         public async Task<IActionResult> GetOwnProfileAsync ()
@@ -34,6 +44,11 @@ namespace Musistance.Controllers
             }
         }
 
+        /// <summary>
+        /// Gets a user's profile given their ID.
+        /// </summary>
+        /// <param name="id">ID of the user.</param>
+        /// <returns>The profile, if found.</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(200,Type = typeof(ProfileDto))]
         public async Task<IActionResult> GetProfileAsync (int id)

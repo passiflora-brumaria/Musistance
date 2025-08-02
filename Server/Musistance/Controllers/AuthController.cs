@@ -16,6 +16,9 @@ namespace Musistance.Controllers
         private IItchIntegration _itch;
         private IAuthService _auth;
 
+        /// <summary>
+        /// Dependency Injection constructor.
+        /// </summary>
         public AuthController (IItchIntegration itch, IAuthService auth)
         {
             _itch = itch;
@@ -44,7 +47,7 @@ namespace Musistance.Controllers
         /// </summary>
         /// <param name="id">User ID, used as a username.</param>
         /// <param name="vCode">Validation code obtained at signup (or previous login), used as a password.</param>
-        /// <returns>The auth session, which includes an access token and the next validation code.</returns>
+        /// <returns>If the profile is ready, the auth session, which includes an access token and the next validation code; otherwise, the input data.</returns>
         [HttpPost("login/{id}")]
         [ProducesResponseType(200,Type = typeof(AuthSessionDto))]
         public async Task<IActionResult> LoginAsync (int id, [FromBody] string vCode)
