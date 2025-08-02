@@ -1,3 +1,6 @@
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 using MusistanceClient.Api.Dto.Auth;
 using MusistanceClient.Api.Dto.Profile;
 using Newtonsoft.Json;

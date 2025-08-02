@@ -1,5 +1,7 @@
+using System;
+using System.Net.Http;
 using System.Net.Http.Json;
-using Godot;
+using System.Threading.Tasks;
 using MusistanceClient.Api.Dto.Auth;
 using Newtonsoft.Json;
 
@@ -9,7 +11,7 @@ namespace MusistanceClient.Api.Modules;
 /// Auth API connections.
 /// </summary>
 public class AuthModule {
-    private readonly System.Net.Http.HttpClient _http;
+    private readonly HttpClient _http;
 
     /// <summary>
     /// Constructor.
@@ -17,7 +19,7 @@ public class AuthModule {
     /// <param name="config">API configuration.</param>
     public AuthModule (ApiConfiguration config)
     {
-        _http = new System.Net.Http.HttpClient()
+        _http = new HttpClient()
         {
             BaseAddress = new Uri(config.BaseUrl + "auth/")
         };
